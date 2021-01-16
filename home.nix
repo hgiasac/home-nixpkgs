@@ -2,11 +2,21 @@
 
 {
   nixpkgs.config.allowUnfree = true;
-  
+  nixpkgs.config.allowBroken = true;
+  nixpkgs.config.allowUnsupportedSystem = true; 
+  nixpkgs.config.permittedInsecurePackages = [
+    "p7zip-16.02"
+  ];
+  nixpkgs.overlays = [
+    (import (builtins.fetchTarball {
+      url = https://github.com/nubank/nixpkgs/archive/master.tar.gz;
+    }))
+  ];
   # imports = [
   #  ./emacs
   # ];
-  home.packages = [
+  home.packages = with pkgs; [
+    pkgs.zip
     pkgs.atom
     pkgs.slack
     pkgs.discord
@@ -18,6 +28,42 @@
     pkgs.glxinfo
     pkgs.jmeter   
     pkgs.libpng
+    pkgs.android-studio
+    pkgs.mongodb-tools
+    pkgs.vokoscreen
+    pkgs.vlc
+    pkgs.awscli
+    pkgs.openssl
+    pkgs.libreoffice
+    # pkgs.notable
+    pkgs.postman
+    pkgs.bridge-utils
+    pkgs.upx
+    pkgs.telnet
+    pkgs.circleci-cli
+    pkgs.lm_sensors
+    pkgs.openvpn
+    pkgs.x2goclient
+    pkgs.freerdp
+    pkgs.yarn
+    pkgs.nomacs
+    pkgs.purescript
+    pkgs.spago
+    pkgs.gox
+    pkgs.qt5.qttools
+    pkgs.protobuf
+    pkgs.nixnote2
+    
+    # nubank.flutter
+    # nubank.dart
+    # nubank.hover
+    pkgs.cocoapods
+    pkgs.gradle
+    pkgs.lua
+    pkgs.luaPackages.luacheck
+    pkgs.terraform
+    pkgs.skaffold
+    pkgs.kustomize
   ];
 
   services.gpg-agent = {
@@ -35,11 +81,10 @@
       enable = true;
     };
 
-    firefox = {
-      enable = true;
-      enableAdobeFlash = true;
-      enableGoogleTalk = true;
-    };
+    # firefox = {
+    #   enable = true;
+    #   # enableAdobeFlash = true;
+    # };
 
     home-manager = {
       enable = true;
@@ -48,7 +93,7 @@
 
     termite = {
       enable = true;
-      font = "Noto Sans Mono 12";
+      font = "Hasklig 13";
       allowBold = true;
       mouseAutohide = true;
       scrollOnKeystroke = true;
@@ -94,8 +139,61 @@
       ];
 
       userSettings = {
-        "editor.tabSize" = 2;
+        "eslint.autoFixOnSave" = true;
+        "yaml.format.enable" = true;
+        # "yaml.schemas" = {
+        #   "Kubernetes" = "*.yaml";
+        # };
 
+        # "python.linting.pylintPath" = "/run/current-system/sw/bin/pylint";
+        "editor.codeActionsOnSave" = {
+          "source.fixAll.tslint" = true;
+          "source.fixAll.eslint" = true;
+          "source.fixAll.stylelint" = true;
+        };
+
+        "editor.fontSize" = 15;
+        "editor.tabSize" = 2;
+        "files.insertFinalNewline" = true;
+        "files.trimFinalNewlines" = true;
+        "files.associations" = {
+          "*.tfvars" = "terraform";
+          "*.tf" = "terraform";
+        };
+        "go.useLanguageServer" = true;
+        "go.gopath" = "/go";
+        "go.toolsEnvVars" = {
+          "GO111MODULE" = "auto";
+        };
+        "go.testFlags" = ["-v"];
+
+        "python.venvPath" = "/data/projects/pyenv";
+        "[python]" = {
+          "editor.tabSize" = 4;
+        };
+        "[terraform]" = {
+          "editor.formatOnSave" = true;
+        };
+        "prettier-eslint.eslintIntegration" = true;
+        "stylishHaskell.commandLine" =  "/home/hgiasac/.nix-profile/bin/stylish-haskell";
+        "editor.rulers" = [80 120];
+        "update.mode" = "none"; 
+        "python.linting.pylintPath" = "/run/current-system/sw/bin/pylint";
+        
+        "reason.path.bsb" = "./node_modules/bs-platform/lib/bsb.linux";
+        
+        "purescript.pursExe" = "/home/hgiasac/.nix-profile/bin/purs";
+        "purescript.addSpagoSources" = true;
+        "purescript.addNpmPath" = true;
+        "purescript.buildCommand" = "spago build --purs-args --json-errors";
+        "css.validate" = false;
+        "less.validate" = false;
+        "scss.validate" = false;  
+        "editor.fontFamily" = "Hasklig, 'Droid Sans Mono', monospace, 'Droid Sans Fallback'";
+        "lua.targetVersion" = "5.2";
+        "lua.luacheckPath" = "/home/hgiasac/.nix-profile/bin/luacheck";
+
+        
       };
     };
 
@@ -159,9 +257,18 @@
         epkgs.dockerfile-mode
         epkgs.exec-path-from-shell     
         epkgs.intero
+        epkgs.ace-window
      ];
    };
   
 
-  }; 
+ };
+
+ # Using Bluetooth headset buttons to control media player
+# systemd.user.services.mpris-proxy = {
+#    Unit.Description = "Mpris proxy";
+#    Unit.After = [ "network.target" "sound.target" ];
+#    Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+#    Install.WantedBy = [ "default.target" ];
+#  };
 } 
